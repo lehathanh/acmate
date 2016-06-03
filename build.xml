@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="ACMate-Lite" default="export" basedir=".">
+
+	<property name="sources-dir" value="${basedir}/src" />
+	<property name="build-dir" value="${basedir}/bin" />
+	<property name="libs-dir" value="${basedir}/libs" />
+	
+	<path id="classpath">
+		<pathelement location="${build-dir}" />
+		<fileset dir="${libs-dir}" includes="*.jar"/>		
+	</path>
+	
+	<target name="build">
+		<javac srcdir="${sources-dir}" includes="**" encoding="utf-8" destdir="${build-dir}" source="1.8" target="1.8" nowarn="true" debug="true" debuglevel="lines,vars,source" includeantruntime="no">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="export" depends="build">
+		  <jar destfile="${basedir}/acmate-lite.jar" basedir="${build-dir}" excludes="**/*Test.*">
+		  	<zipgroupfileset dir="${libs-dir}" includes="*.jar"/>
+		  </jar>
+	</target>
+
+	<target name="build-clean">
+		<javac srcdir="${sources-dir}" includes="**" encoding="utf-8" destdir="${build-dir}" source="1.8" target="1.8" nowarn="true" debug="false" includeantruntime="no">
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<target name="deploy" depends="build-clean">
+		  <jar destfile="${basedir}/acmate-lite.jar" basedir="${build-dir}" excludes="**/*Test.*">
+		  	<zipgroupfileset dir="${libs-dir}" includes="*.jar"/>
+		  </jar>
+	</target>
+	
+	<target name="gen-xinput-stubs">
+		<exec executable="/usr/bin/xjc">
+			<arg value="-d"/>
+	        <arg value="${sources-dir}"/>
+	        <arg value="-p"/>
+	        <arg value="org.svv.xinput"/>
+	        <arg value="${basedir}/xsd/xinput.xsd"/>
+		</exec>
+	</target>
+
+	<target name="gen-config-stubs">
+		<exec executable="/usr/bin/xjc">
+			<arg value="-d"/>
+	        <arg value="${sources-dir}"/>
+	        <arg value="-p"/>
+	        <arg value="org.svv.acmate.model.config"/>
+	        <arg value="${basedir}/xsd/config.xsd"/>
+		</exec>
+	</target>
+
+	<target name="gen-filters-stubs">
+		<exec executable="/usr/bin/xjc">
+			<arg value="-d"/>
+	        <arg value="${sources-dir}"/>
+	        <arg value="-p"/>
+	        <arg value="org.svv.acmate.model.filters"/>
+	        <arg value="${basedir}/xsd/filters.xsd"/>
+		</exec>
+	</target>
+
+	<target name="gen-sessions-stubs">
+		<exec executable="/usr/bin/xjc">
+			<arg value="-d"/>
+	        <arg value="${sources-dir}"/>
+	        <arg value="-p"/>
+	        <arg value="org.svv.acmate.model.sessions"/>
+	        <arg value="${basedir}/xsd/test-results.xsd"/>
+		</exec>
+	</target>
+	
+</project>

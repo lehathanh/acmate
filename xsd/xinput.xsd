@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://acmate.svv.org/xinput" xmlns:tns="http://acmate.svv.org/xinput"
+	elementFormDefault="qualified">
+
+	<xs:element name="domainInputs">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tns:head" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="tns:page" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="head">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="dataSource" type="xs:string" />
+				<xs:element name="dateCreated" type="xs:string" />
+				<xs:element name="dateModified" type="xs:string" />
+				<xs:element name="host" type="xs:string" />
+				<xs:element name="startURL" type="xs:string" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="page">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tns:xinput" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attributeGroup ref="tns:commonAttGroup"></xs:attributeGroup>
+			<xs:attribute name="urlPath" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="xinput">
+		<xs:complexType>
+			<xs:group ref="tns:inputSet" />
+			<xs:attribute name="source" type="tns:sourceType" />
+			<xs:attribute name="type" type="tns:inputType" />
+			<xs:attributeGroup ref="tns:commonAttGroup"></xs:attributeGroup>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:group name="inputSet">
+		<xs:sequence>
+			<xs:element ref="tns:atomicParam" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element ref="tns:atomicParamRef" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:group>
+
+	<xs:element name="atomicParamRef">
+		<xs:complexType>
+			<xs:attribute name="paramRef" type="xs:IDREF" use="required" />
+			<xs:attribute name="name" type="xs:string" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="atomicParam">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tns:dataClz" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attributeGroup ref="tns:commonAttGroup" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="dataClz" type="tns:complexDataSpecType" />
+
+ 	<xs:attributeGroup name="commonAttGroup">
+		<xs:attribute name="id" type="xs:ID" />
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:attributeGroup>
+
+	<xs:complexType name="complexDataSpecType">
+		<xs:sequence>
+			<xs:group ref="tns:simpleDataSpecType" />
+		</xs:sequence>
+		<xs:attribute name="base" type="xs:QName" use="required" />
+		<xs:attributeGroup ref="tns:commonAttGroup"></xs:attributeGroup>
+	</xs:complexType>
+
+	<xs:group name="simpleDataSpecType">
+		<xs:sequence>
+			<xs:group ref="tns:facets" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:group>
+
+	<xs:group name="facets">
+		<xs:choice>
+			<xs:element ref="tns:minExclusive" />
+			<xs:element ref="tns:minInclusive" />
+			<xs:element ref="tns:maxExclusive" />
+			<xs:element ref="tns:maxInclusive" />
+			<xs:element ref="tns:totalDigits" />
+			<xs:element ref="tns:fractionDigits" />
+			<xs:element ref="tns:length" />
+			<xs:element ref="tns:minLength" />
+			<xs:element ref="tns:maxLength" />
+			<xs:element ref="tns:enumeration" />
+			<xs:element ref="tns:pattern" />
+		</xs:choice>
+	</xs:group>
+
+	<xs:element name="totalDigits" id="totalDigits">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="tns:numFacet">
+					<xs:attribute name="value" type="xs:positiveInteger"
+						use="required" />
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="fractionDigits" id="fractionDigits" type="tns:numFacet">
+
+	</xs:element>
+
+	<xs:complexType name="facet">
+		<xs:attribute name="value" use="required" />
+	</xs:complexType>
+
+	<xs:element name="minExclusive" id="minExclusive" type="tns:facet">
+
+	</xs:element>
+	<xs:element name="minInclusive" id="minInclusive" type="tns:facet">
+
+	</xs:element>
+
+	<xs:element name="maxExclusive" id="maxExclusive" type="tns:facet">
+
+	</xs:element>
+	<xs:element name="maxInclusive" id="maxInclusive" type="tns:facet">
+
+	</xs:element>
+
+	<xs:complexType name="numFacet">
+		<xs:complexContent>
+			<xs:restriction base="tns:facet">
+				<xs:attribute name="value" type="xs:nonNegativeInteger"
+					use="required" />
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="noFixedFacet">
+		<xs:complexContent>
+			<xs:restriction base="tns:facet">
+				<xs:attribute name="fixed" use="prohibited" />
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:element name="length" id="length" type="tns:numFacet">
+
+	</xs:element>
+	<xs:element name="minLength" id="minLength" type="tns:numFacet">
+
+	</xs:element>
+	<xs:element name="maxLength" id="maxLength" type="tns:numFacet">
+
+	</xs:element>
+
+	<xs:element name="enumeration" id="enumeration" type="tns:noFixedFacet">
+
+	</xs:element>
+
+	<xs:element name="pattern" id="pattern">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:restriction base="tns:noFixedFacet">
+					<xs:attribute name="value" type="xs:string" use="required" />
+				</xs:restriction>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="inputType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PARAM_URL" />
+			<xs:enumeration value="PARAM_BODY" />
+			<xs:enumeration value="PARAM_COOKIE" />
+			<xs:enumeration value="PARAM_XML" />
+			<xs:enumeration value="PARAM_XML_ATTR" />
+			<xs:enumeration value="PARAM_MULTIPART_ATTR" />
+			<xs:enumeration value="PARAM_JSON" />
+			<xs:enumeration value="PARAM_UNKNOWN" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="sourceType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="USER" />
+			<xs:enumeration value="SERVER" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

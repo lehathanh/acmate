@@ -14,7 +14,7 @@ ACMate-Lite contains the following key components:
 
 ### Binary 
 
-You can download the binary file (acmate.jar) here..
+You can download the binary file (acmate-lite.jar) here..
 
 ### Source
 

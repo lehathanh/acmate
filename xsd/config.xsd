@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://acmate.svv.org/configuration" xmlns:tns="http://acmate.svv.org/configuration"
+	elementFormDefault="qualified">
+
+	<xs:element name="Configuration">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tns:User" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="tns:Authentication" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="tns:PageExtToExclude" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="User">
+		<xs:complexType>
+			<xs:attribute name="username" type="xs:string" />
+			<xs:attribute name="password" type="xs:string" />
+			<xs:attribute name="role" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="PageExtToExclude">
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="Authentication">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Method" type="tns:AuthenticationMethod" />	
+				<xs:element name="LogInURL" type="xs:string" />	
+				<xs:element name="LogoutURLSubfix" type="xs:string" />
+			</xs:sequence>
+			<xs:attribute name="userFieldName" type="xs:string" />
+			<xs:attribute name="passwordFieldName" type="xs:string" />
+		</xs:complexType>	
+	</xs:element>
+
+	<xs:simpleType name="AuthenticationMethod">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Credential" />
+			<xs:enumeration value="HTTP Basic" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+</xs:schema>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://acmate.svv.org/filters" xmlns:tns="http://acmate.svv.org/filters"
+	elementFormDefault="qualified">
+
+	<xs:element name="Filters">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tns:Filter" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="Filter">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="tns:URLPattern" />
+				<xs:element ref="tns:MethodPattern" />
+				<xs:element ref="tns:StatusCodePattern" />
+				<xs:element ref="tns:ContentPattern" />
+			</xs:sequence>
+			<!-- 
+			<xs:attribute name="urlPattern" type="xs:string" />
+			<xs:attribute name="methodPattern" type="xs:string" />
+			<xs:attribute name="statusCodePattern" type="xs:string" />
+			<xs:attribute name="contentPattern" type="xs:string" />
+			 -->
+			<xs:attribute name="permission" type="tns:Permission" />
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="URLPattern">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="matched" type="xs:boolean" default="true"  />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="MethodPattern">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="matched" type="xs:boolean" default="true"  />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="StatusCodePattern">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="matched" type="xs:boolean" default="true"  />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="ContentPattern">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="matched" type="xs:boolean" default="true"  />
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:simpleType name="Permission">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="allowed" />
+			<xs:enumeration value="denied" />
+			<xs:enumeration value="" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+</xs:schema>

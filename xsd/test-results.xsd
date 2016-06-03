@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://acmate.svv.org/test-results" xmlns:tns="http://acmate.svv.org/test-results" elementFormDefault="qualified">
+	<element name="Sessions">
+		<complexType>
+			<sequence>
+				<element ref="tns:Session" minOccurs="0" maxOccurs="unbounded" />
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="Session">
+		<complexType >
+			<sequence>
+				<element ref="tns:Cookie" minOccurs="0" maxOccurs="1"/>
+				<element ref="tns:ACTest" minOccurs="0" maxOccurs="unbounded"/>
+			</sequence>		
+			<attribute name="id" type="string" />
+			<attribute name="user" type="string" />
+			<attribute name="role" type="string" />
+			<attribute name="timestamp" type="string" />
+		</complexType>
+	</element>
+	
+	<element name="Cookie">
+		<complexType>
+			<sequence>
+				<element ref="tns:Parameter" minOccurs="0" maxOccurs="unbounded"/>
+			</sequence>
+		</complexType>
+	</element>
+	
+	<element name="Parameter">
+		<complexType>
+			<attribute name="name" type="string" />
+			<attribute name="value" type="string" />
+			<attribute name="type" type="byte" />
+		</complexType>
+	</element>
+	
+	<element name="ACTest">
+		<complexType>
+			<all>
+				<element ref="tns:Request" />
+				<element ref="tns:AccessResponse" />
+			</all>
+		</complexType>
+	</element>
+	
+	<element name="Request">
+		<complexType>
+			<sequence>
+				<element ref="tns:Parameter" minOccurs="0" maxOccurs="unbounded"/>
+			</sequence>
+			<attribute name="url" type="string"></attribute>
+			<attribute name="method" type="string"></attribute>
+		</complexType>
+	</element>
+	
+	<element name="Response">
+		<complexType>
+			<simpleContent>
+				<extension base="string">
+					<attribute name="base64" type="boolean" default="false"  />
+				</extension>
+			</simpleContent>
+		</complexType>
+	</element>
+	
+	<element name="AccessResponse">
+		<complexType>
+			<sequence>
+				<element ref="tns:Response" minOccurs="0" maxOccurs="1"/>
+			</sequence>
+			<attribute name="permissionColor" type="string" />
+			<attribute name="responseCode" type="string" />
+		</complexType>
+	</element>
+</schema>
