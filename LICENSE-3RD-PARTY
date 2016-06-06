@@ -1,0 +1,16 @@
+LICENCE-3RD-PARTY
+
+The Apache License, Version 2.0 (Apache) applies to:
+- Apache Commons Lang, Copyright (c) 2016 The Apache Software Foundation
+- xeger, Copyright 2009 Wilfred Springer, Copyright 2012 Jason Pell, Copyright 2013 Antonio García-Domínguez
+
+The BSD License (BSD) applies to:
+- Automaton, Copyright (c) Anders Møller (amoeller<at>cs.au.dk)
+
+The GNU General Public License (GNU) applies to:
+- Weka, Copyright (C) 1998-2015  University of Waikato
+
+The MIT License (MIT) applies to
+- jsoup, Copyright (c) 2009 - 2016 Jonathan Hedley (jonathan@hedley.net)
+
+
