@@ -1,11 +1,10 @@
-# ACMate-Lite
+# ACMate
 
-ACMate is a framework for testing and reverse-engineering access control (AC) policies. It is developed by the SVV Laboratory, SnT, University of Luxembourg.
+ACMate is a framework for testing and reverse-engineering access control (AC) policies. It is developed by the SVV Laboratory, SnT, University of Luxembourg. ACMate provides hand-on testing functions to support the Web application developers to test the access control implemented in their web-based products.
 
-Here you can download the light weight version of the ACMate tool with the basic functions for access control testing.
+ACMate is written as a Java-based extension module for Burp Suite (http://protswigger.net/burp/) that can be loaded and run seamlessly with Burp Suite proxy and spider. 
 
-ACMate-Lite is a Java-based extension module for Burp Suite (http://protswigger.net/burp/) that can be loaded and run seamlessly with Burp Suite proxy and spider. ACMate-Lite provides hand-on testing functions to support the Web application developers to test the access control implemented in their web-based products.
-ACMate-Lite contains the following key components:
+Here you can download the light-weight version (ACMate-Lite) of the ACMate tool with the basic functions for access control testing:
 * Mining input specification from logs
 * Smartly generating AC requests using pairwise combination strategy
 * Executing AC tests, taking into account contextual parameters
@@ -34,9 +33,9 @@ User guide is available <a href="https://github.com/lehathanh/acmate/blob/master
 
 # ACMate Full version
 
-ACMate provides additional features to assist AC testing as following: 
-* AC policy inference, where AC policies are learned after the AC logs are obtained and analysed from the AC tests
-* Assessment and Issues detection: ACMate highlights the inferred AC policies in three categories: "allowed", "denied" and "unclassified". This feature assissts the tester to quickly locate and assess the AC policies that may relate to potential AC issues in the tested web application.
+ACMate provides advanced features to assist AC testing as following: 
+* <b>AC policy inference</b>, where AC policies are learned after the AC logs are obtained and analysed from the AC tests
+* <b>Assessment and Issues detection</b>: ACMate highlights the inferred AC policies in three categories: "allowed", "denied" and "unclassified". This feature assissts the tester to quickly locate and assess the AC policies that may relate to potential AC issues in the tested web application.
 
 If you are interested in the ACMate, please contact us: <a href="mailto:hathanh.le@uni.lu?Subject=ACMate" target="_top">hathanh.le@uni.lu</a>
 
