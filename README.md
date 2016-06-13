@@ -39,6 +39,6 @@ ACMate provides advanced features to assist AC testing as following:
 
 If you are interested in the ACMate, please contact us: <a href="mailto:hathanh.le@uni.lu?Subject=ACMate" target="_top">hathanh.le@uni.lu</a>
 
-#Bibliography
+# Bibliography
 
 * H. T. Le, C. D. Nguyen, L. Briand, and B. Hourte. Automated inference of access control policies for web applications. <i>In Proceedings of the 20th ACM Symposium on Access Control Models and Technologies</i>, SACMAT ’15, pages 27–37, New York, NY, USA, 2015. ACM. (<a href="https://publications.uni.lu/handle/10993/20786">download</a>)
