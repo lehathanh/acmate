@@ -1,32 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2016, SVV Lab, University of Luxembourg
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
- *
- * 3. Neither the name of acmate nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *******************************************************************************/
 package org.svv.acmate.utils;
 
 import java.util.ArrayList;
@@ -35,6 +6,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.svv.acmate.model.filters.ContentPattern;
 import org.svv.acmate.model.filters.Filter;
 import org.svv.acmate.model.filters.Filters;
 
@@ -128,10 +100,16 @@ public class PermissionUtil {
 				urlPattern = Pattern.compile(filter.getURLPattern().getValue());
 			
 			
-			Pattern contentPattern = null;
-			if (filter.getContentPattern() != null && !filter.getContentPattern().getValue().isEmpty()) 
-				contentPattern = Pattern.compile(filter.getContentPattern().getValue());
+//			Pattern contentPattern = null;
+//			if (filter.getContentPattern() != null && !filter.getContentPattern().getValue().isEmpty()) 
+//				contentPattern = Pattern.compile(filter.getContentPattern().getValue());
 
+			List<ContentPattern> contentPatterns = new ArrayList<ContentPattern>();
+			if (filter.getContentPattern() != null) {
+				contentPatterns = filter.getContentPattern();
+			}
+				
+			
 			// start matching
 			boolean status = true;
 			
@@ -176,16 +154,25 @@ public class PermissionUtil {
 			}
 			
 			// content - partial matching
-			if (status && contentPattern != null){
+			if (status && contentPatterns != null){
 				int contentIndex = responseInfo.getBodyOffset();
 				if (contentIndex > 0){
-					// 
+					// get the response body content 
 					byte[] body = Arrays.copyOfRange(rr.getResponse(), contentIndex, rr.getResponse().length);
 					String content = helper.bytesToString(body);
-					boolean patternVal = contentPattern.matcher(content).find();
-					if (!getTruthValue(patternVal, filter.getContentPattern().isMatched())){
-						status = false;
+
+					// match with the defined content patterns
+					Boolean patternVal;
+					for (ContentPattern contentPatternItem : contentPatterns) {
+						patternVal = Pattern.compile(contentPatternItem.getValue()).matcher(content).find();
+						
+						if (!getTruthValue(patternVal, contentPatternItem.isMatched())){
+							status = false;
+							break;
+						}
 					}
+//							
+					
 //				} else if (".*".equals(filter.getContentPattern().getValue())) {
 //					// special pattern for all content
 //					status = true;

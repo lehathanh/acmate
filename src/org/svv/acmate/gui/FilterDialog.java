@@ -1,32 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2016, SVV Lab, University of Luxembourg
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
- *
- * 3. Neither the name of acmate nor the names of its
- *   contributors may be used to endorse or promote products derived from
- *   this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *******************************************************************************/
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -34,10 +5,18 @@
  */
 package org.svv.acmate.gui;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+
+import org.svv.acmate.gui.table.ContentPatternTableModel;
 import org.svv.acmate.model.filters.ContentPattern;
 import org.svv.acmate.model.filters.Filter;
 import org.svv.acmate.model.filters.MethodPattern;
@@ -48,11 +27,15 @@ import org.svv.acmate.model.filters.URLPattern;
 /**
  *
  * @author cdnguyen
+ * @update: thanhhale
+ * 
  */
 public class FilterDialog extends javax.swing.JDialog {
 	
 	private int selectedOption = JOptionPane.OK_OPTION;
 	private Filter filter;
+	
+	private ContentPatternTableModel contentPatternModel;
 	
 	public Filter getFilter() {
 		return filter;
@@ -78,6 +61,21 @@ public class FilterDialog extends javax.swing.JDialog {
         bttnAdd.setText("Update");
         
         setValues();
+
+        tblContentPatterns.setModel(contentPatternModel);
+
+		tblContentPatterns.setColumnSelectionAllowed(false);
+		tblContentPatterns.getTableHeader().setReorderingAllowed(false);
+		
+		tblContentPatterns.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+		tblContentPatterns.getColumnModel().getColumn(0).setResizable(true);
+		tblContentPatterns.getColumnModel().getColumn(0).setWidth(355);
+		tblContentPatterns.getColumnModel().getColumn(0).setPreferredWidth(355);
+		tblContentPatterns.getColumnModel().getColumn(1).setResizable(false);
+		tblContentPatterns.getColumnModel().getColumn(1).setWidth(65);
+		tblContentPatterns.getColumnModel().getColumn(1).setPreferredWidth(65);
+		tblContentPatterns.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        
     }
     
     
@@ -91,6 +89,27 @@ public class FilterDialog extends javax.swing.JDialog {
         setModal(true);
         setTitle("Add a new filter");
         filter = new Filter();
+        
+        ContentPattern contentPattern = new ContentPattern();
+        contentPattern.setValue("");
+        contentPattern.setMatched(false);
+
+        List<ContentPattern> contentPatternList = new ArrayList<>();
+    	contentPatternList.add(contentPattern);
+    	contentPatternModel = new ContentPatternTableModel(contentPatternList);
+        tblContentPatterns.setModel(contentPatternModel);
+        
+        tblContentPatterns.setColumnSelectionAllowed(false);
+        tblContentPatterns.getTableHeader().setReorderingAllowed(false);
+        
+        tblContentPatterns.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tblContentPatterns.getColumnModel().getColumn(0).setResizable(true);
+        tblContentPatterns.getColumnModel().getColumn(0).setWidth(355);
+        tblContentPatterns.getColumnModel().getColumn(0).setPreferredWidth(355);
+        tblContentPatterns.getColumnModel().getColumn(1).setResizable(false);
+        tblContentPatterns.getColumnModel().getColumn(1).setWidth(65);
+        tblContentPatterns.getColumnModel().getColumn(1).setPreferredWidth(65);
+        tblContentPatterns.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     }
     
     /**
@@ -98,9 +117,23 @@ public class FilterDialog extends javax.swing.JDialog {
      */
     private void setValues(){
     	
-    	if (filter.getContentPattern() != null){
-    		txtContentPattern.setText(filter.getContentPattern().getValue());
-    		cboxContentMatched.setSelected(filter.getContentPattern().isMatched());
+        if(filter.getContentPattern() == null) {
+        	ContentPattern contentPattern = new ContentPattern();
+        	contentPattern.setValue("");
+        	contentPattern.setMatched(false);
+        	
+        	List<ContentPattern> contentPatternList = new ArrayList<>();
+        	contentPatternList.add(contentPattern);
+        	contentPatternModel = new ContentPatternTableModel(contentPatternList);
+        }
+        else {
+        	contentPatternModel = new ContentPatternTableModel(filter.getContentPattern());
+        }
+
+        if (filter.getContentPattern() != null){
+//    		for(ContentPattern contentPattern : filter.getContentPattern()) {
+//    			contentPatternModel.addPattern(contentPattern);
+//    		}
     	}
     	
     	if (filter.getStatusCodePattern() != null){
@@ -133,8 +166,7 @@ public class FilterDialog extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jLabel1 = new javax.swing.JLabel();
+    	jLabel1 = new javax.swing.JLabel();
         txtUrlPattern = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         txtHTTPCodePattern = new javax.swing.JTextField();
@@ -142,18 +174,21 @@ public class FilterDialog extends javax.swing.JDialog {
         bttnAdd = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         txtHttpMethod = new javax.swing.JTextField();
-        txtContentPattern = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         comboPermission = new javax.swing.JComboBox();
         bttnCancel = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
         cboxUrlMatched = new javax.swing.JCheckBox();
         cboxMethodMatched = new javax.swing.JCheckBox();
         cboxCodeMatched = new javax.swing.JCheckBox();
-        cboxContentMatched = new javax.swing.JCheckBox();
-        jSeparator1 = new javax.swing.JSeparator();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblContentPatterns = new javax.swing.JTable();
+        bttnAddContentPattern = new javax.swing.JButton();
+        bttnDeleteContentPattern = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
 
-        jCheckBox1.setText("jCheckBox1");
+//   Don't use this:     setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMaximumSize(new java.awt.Dimension(644, 442));
+        setMinimumSize(new java.awt.Dimension(644, 442));
 
         jLabel1.setText("URL Pattern: ");
 
@@ -163,8 +198,7 @@ public class FilterDialog extends javax.swing.JDialog {
 
         bttnAdd.setText("Add");
         bttnAdd.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bttnAddActionPerformed(evt);
             }
         });
@@ -178,13 +212,10 @@ public class FilterDialog extends javax.swing.JDialog {
 
         bttnCancel.setText("Cancel");
         bttnCancel.addActionListener(new java.awt.event.ActionListener() {
-            @Override
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bttnCancelActionPerformed(evt);
             }
         });
-
-        jLabel6.setText("Use Java Regular Expressions, leave textboxes blank if not applicable");
 
         cboxUrlMatched.setText("Matched");
         cboxUrlMatched.setToolTipText("Uncheck if the pattern should not match");
@@ -195,111 +226,169 @@ public class FilterDialog extends javax.swing.JDialog {
         cboxCodeMatched.setText("Matched");
         cboxCodeMatched.setToolTipText("Uncheck if the pattern should not match");
 
-        cboxContentMatched.setText("Matched");
-        cboxContentMatched.setToolTipText("Uncheck if the pattern should not match");
+        tblContentPatterns.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblContentPatterns.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2){
+					// double click
+//					updateFilterACtionPerformed();
+				}
+				
+			}
+		});
+        
+        jScrollPane1.setViewportView(tblContentPatterns);
+
+        bttnAddContentPattern.setText("+");
+        bttnAddContentPattern.setToolTipText("");
+        bttnAddContentPattern.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bttnAddContentPatternActionPerformed(evt);
+            }
+        });
+
+        bttnDeleteContentPattern.setText("-");
+        bttnDeleteContentPattern.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bttnDeleteContentPatternActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Use Java Regular Expression, leave textboxes blank if not applicable");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtUrlPattern)
-                            .addComponent(txtHttpMethod)
-                            .addComponent(txtHTTPCodePattern, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtContentPattern)
-                            .addComponent(comboPermission, 0, 284, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cboxUrlMatched)
-                                    .addComponent(cboxMethodMatched, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addComponent(cboxCodeMatched, javax.swing.GroupLayout.Alignment.TRAILING))
-                            .addComponent(cboxContentMatched, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(bttnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bttnCancel))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jLabel1)
+                                        .addComponent(jLabel3))
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(320, 320, 320)
+                                        .addComponent(bttnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(bttnCancel))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(comboPermission, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                    .addComponent(txtUrlPattern, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE)
+                                                    .addComponent(txtHttpMethod)
+                                                    .addComponent(txtHTTPCodePattern))
+                                                .addGap(3, 3, 3)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addComponent(cboxUrlMatched)
+                                                    .addComponent(cboxMethodMatched)
+                                                    .addComponent(cboxCodeMatched)))))))
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel6))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(0, 89, Short.MAX_VALUE))))
+                        .addGap(157, 157, 157)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(bttnAddContentPattern, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(bttnDeleteContentPattern, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(txtUrlPattern, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cboxUrlMatched))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(txtUrlPattern, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboxUrlMatched))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txtHttpMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cboxMethodMatched)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtHttpMethod, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboxMethodMatched)
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(txtHTTPCodePattern, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboxCodeMatched))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtContentPattern, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cboxContentMatched))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(bttnAddContentPattern)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bttnDeleteContentPattern)))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(comboPermission, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bttnAdd)
                     .addComponent(bttnCancel))
                 .addContainerGap())
         );
-
+        
         pack();
     }// </editor-fold>                        
 
 
-    private void bttnAddActionPerformed(java.awt.event.ActionEvent evt) {   
+    private void bttnAddContentPatternActionPerformed(java.awt.event.ActionEvent evt) {
+       	ContentPattern contentPattern = new ContentPattern();
+    	contentPattern.setValue("");
+    	contentPattern.setMatched(false);
     	
+    	contentPatternModel.addPattern(contentPattern);
     	
-    	boolean contentMatched = cboxContentMatched.isSelected();
-    	String regx = txtContentPattern.getText();
-    	if (checkJavaRegx(regx)){
-    		if (filter.getContentPattern() == null){
-    			ContentPattern content = new ContentPattern();
-	    		content.setValue(regx);
-	    		content.setMatched(contentMatched);
-	    		filter.setContentPattern(content);
-    		} else {
-    			filter.getContentPattern().setMatched(contentMatched);
-    			filter.getContentPattern().setValue(regx);
+    }                                                     
+
+    private void bttnDeleteContentPatternActionPerformed(java.awt.event.ActionEvent evt) {                                                         
+    	int selectedContentPatternIndex = tblContentPatterns.getSelectedRow();
+    	if(selectedContentPatternIndex > -1) {
+    		
+    		if(JOptionPane.showConfirmDialog(this, "Really want to delete the selected pattern?",
+    				"Delete content pattern", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+    			contentPatternModel.deletePattern(selectedContentPatternIndex);
     		}
     	}
     	
+    }                                                        
+
+    private void bttnAddActionPerformed(java.awt.event.ActionEvent evt) {   
+    	
+    	boolean contentMatched;
+    	String regx;
+    	
+//    	contentMatched = cboxContentMatched.isSelected();
+//    	regx = txtContentPattern.getText();
+//    	if (checkJavaRegx(regx)){
+//    		if (filter.getContentPattern() == null){
+//    			ContentPattern content = new ContentPattern();
+//	    		content.setValue(regx);
+//	    		content.setMatched(contentMatched);
+//	    		filter.setContentPattern(content);
+//    		} else {
+//    			filter.getContentPattern().setMatched(contentMatched);
+//    			filter.getContentPattern().setValue(regx);
+//    		}
+//    	}
+
+    	// Method pattern
     	contentMatched = cboxMethodMatched.isSelected();
     	regx = txtHttpMethod.getText();
     	
@@ -315,6 +404,7 @@ public class FilterDialog extends javax.swing.JDialog {
     		}
     	}
         
+    	// URL pattern
         contentMatched = cboxUrlMatched.isSelected();
     	regx = txtUrlPattern.getText();
     	
@@ -330,6 +420,7 @@ public class FilterDialog extends javax.swing.JDialog {
     		}
     	}
         
+    	// HTTP Code pattern
         contentMatched = cboxCodeMatched.isSelected();
     	regx = txtHTTPCodePattern.getText();
     	
@@ -344,8 +435,12 @@ public class FilterDialog extends javax.swing.JDialog {
     			filter.getStatusCodePattern().setValue(regx);
     		}
     	}
-        
-        
+
+    	// Content pattern
+    	if(contentPatternModel.getContentPatterns() != null) 
+    		filter.setContentPattern(contentPatternModel.getContentPatterns());
+
+        // Permission
         if (comboPermission.getSelectedIndex() == 0){
         	filter.setPermission(Filter.FILTER_PERMISSION_ALLOWED);
         } else 
@@ -380,23 +475,25 @@ public class FilterDialog extends javax.swing.JDialog {
     	this.setVisible(false);
     }                                          
    
+    // Variables declaration - do not modify                     
     private javax.swing.JButton bttnAdd;
+    private javax.swing.JButton bttnAddContentPattern;
     private javax.swing.JButton bttnCancel;
+    private javax.swing.JButton bttnDeleteContentPattern;
     private javax.swing.JCheckBox cboxCodeMatched;
-    private javax.swing.JCheckBox cboxContentMatched;
     private javax.swing.JCheckBox cboxMethodMatched;
     private javax.swing.JCheckBox cboxUrlMatched;
     private javax.swing.JComboBox comboPermission;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextField txtContentPattern;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblContentPatterns;
     private javax.swing.JTextField txtHTTPCodePattern;
     private javax.swing.JTextField txtHttpMethod;
     private javax.swing.JTextField txtUrlPattern;
+    // End of variables declaration                   
 }
