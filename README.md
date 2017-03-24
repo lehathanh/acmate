@@ -2,7 +2,7 @@
 
 ACMate is a framework for testing and reverse-engineering access control (AC) policies. It is developed by the SVV Laboratory, SnT, University of Luxembourg. ACMate provides hand-on testing functions to support the Web application developers to test the access control implemented in their web-based products.
 
-ACMate is written as a Java-based extension module for Burp Suite (http://protswigger.net/burp/) that can be loaded and run seamlessly with Burp Suite proxy and spider. 
+ACMate is written as a Java-based extension module for Burp Suite (https://portswigger.net/burp/) that can be loaded and run seamlessly with Burp Suite proxy and spider. 
 
 Here you can download the light-weight version (ACMate-Lite) of the ACMate tool with the basic functions for access control testing:
 * Mining input specification from logs
